@@ -1,10 +1,9 @@
-import './App.css';
-import PokemonCards from './components/PokemonCards';
+import Test from "./components/Test";
 
 function App() {
   return (
     <div className="App">
-      <PokemonCards/>
+      <Test />
     </div>
   );
 }

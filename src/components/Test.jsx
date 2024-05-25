@@ -1,25 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import styles from '../utils/css/Test.module.css';
 
-function PokemonCards() {
-  const [State, setState] = useState([]);
+function Test() {
+  const [pokemonData, setPokemonData] = useState([]);
 
-  fetch(" https://pokeapi.co/api/v2/pokemon/ ")
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      setState(data.results);
-    });
+  useEffect(() => {
+    fetch("https://pokeapi.co/api/v2/pokemon/?limit=20")
+      .then((response) => response.json())
+      .then((data) => {
+        const fetches = data.results.map((pokemon) =>
+          fetch(pokemon.url).then((response) => response.json())
+        );
+        Promise.all(fetches)
+        .then((results) => {
+          setPokemonData(results);
+        });
+      });
+  }, []);
 
   return (
-    <>
-      {State.map((card, index) => (
-        <div key={index}>
-          {card.name}
-        </div>
+    <article className={styles.Layout}>
+      {pokemonData.map((pokemon, index) => (
+        <section key={index} className={styles.Card}>
+          <p>{pokemon.name}</p>
+          <img src={pokemon.sprites.front_default} alt={pokemon.name} className={styles.img} />
+        </section>
       ))}
-    </>
+    </article>
   );
 }
 
-export default PokemonCards;
+export default Test;
